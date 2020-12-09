@@ -23,18 +23,35 @@ feature 'the signup process' do
     before(:each) do 
         visit_new_user_url
         fill_in 'Username', :with => 'faking_user@email.com'
+    end
   end
 
 end
 
 feature 'logging in' do
-  scenario 'shows username on the homepage after login'
+  before(:each) do 
+    user = create(:user)
+    debugger
+    visit new_session_url
+    fill_in 'Username', :with => "#{user.username}"
+    fill_in 'Password', :with => "#{user.password}"
+    click_on 'Login'
+  end
+  scenario 'shows username on the homepage after login' do
+    expect(page).to have_content "#{User.last.username}"
+  end
 
 end
 
 feature 'logging out' do
-  scenario 'begins with a logged out state'
+  scenario 'begins with a logged out state' do 
+    # create(:user)
+    # login_user(User.last)
+    # click_on "Logout"
+    expect(page).to have_content "Login"
+  end
 
-  scenario 'doesn\'t show username on the homepage after logout'
-
+  scenario 'doesn\'t show username on the homepage after logout' do
+    expect(page).to_not have_content "#{user.username}"
+  end
 end
